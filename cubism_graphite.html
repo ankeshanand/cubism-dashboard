@@ -1,0 +1,46 @@
+
+<meta charset="utf-8" />
+Cubism.js</pre>
+
+<link href="style.css" rel="stylesheet" type="text/css">
+<style>
+@import url(//fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700);
+@import url(//square.github.com/cubism/style.css);
+</style>
+<div id="body">
+<h2>Host01 Load Average</h2>
+<div id="graphs"></div>
+<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
+<script type="text/javascript" src="http://square.github.com/cubism/cubism.v1.js"></script>
+<script type="text/javascript" src="http://square.github.com/cubism/highlight.min.js"></script>
+<script type="text/javascript">
+</script>
+ 
+<script type="text/javascript">
+var context = cubism.context()
+    .step( 1 * 60 * 1000 )   // 1 minute
+    .size(960);  // 1 * 960 = 4 hours
+ 
+var graphite = context.graphite("http://graphite.mpi-sws.org:5000/graphite");
+var horizon = context.horizon().metric(graphite.metric).height(100);
+ 
+var metrics = [
+   'org.mpi-sws.cloak@tpm-dell2.cloak_cloak_metrics_heap_size',
+   'stats.host02.cpu.load.load',
+   'nonNegativeDerivative(stats.host02.network.eth0.interface_tx_bytes)'
+]
+ 
+d3.select("#graphs").append("div")
+    .attr("class", "axis")
+    .call(context.axis().orient("top"));
+ 
+d3.select("#graphs").append("div")
+    .attr("class", "rule")
+    .call(context.rule());
+ 
+d3.select("#graphs").selectAll(".horizon")
+    .data(metrics)
+  .enter().append("div")
+    .attr("class", "horizon")
+    .call(horizon);
+</script>
